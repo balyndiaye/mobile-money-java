@@ -4,29 +4,41 @@ import java.sql.Timestamp;
 
 public class Operation {
     private int id;
-    private String typeOp; // Ex: 'DEPOT', 'RETRAIT', 'TRANSFERT'
+    private String type;         
     private double montant;
     private Timestamp dateOp;
-    private int compteId;
-    private Integer compteDestId; // Integer car il peut être null (si pas un transfert)
+    private String compteSource; 
+    private String compteDest;   
+    private String marchand;     
 
-    public Operation() {}
-
-    public Operation(int id, String typeOp, double montant, Timestamp dateOp, int compteId, Integer compteDestId) {
-        this.id = id;
-        this.typeOp = typeOp;
-        this.montant = montant;
-        this.dateOp = dateOp;
-        this.compteId = compteId;
-        this.compteDestId = compteDestId;
+    // Constructeur Vide
+    public Operation() {
+        this.dateOp = new Timestamp(System.currentTimeMillis());
     }
 
-    // Getters et Setters
+    // Constructeur pour DEPOT, RETRAIT, PAIEMENT 
+
+    public Operation(String type, double montant, String compteSource) {
+        this();
+        this.type = type;
+        this.montant = montant;
+        this.compteSource = compteSource;
+    }
+
+    //  Constructeur pour TRANSFERT 
+    
+    public Operation(String type, double montant, String compteSource, String compteDest) {
+        this(type, montant, compteSource);
+        this.compteDest = compteDest;
+    }
+
+    // --- Getters et Setters synchronisés ---
+
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
 
-    public String getTypeOp() { return typeOp; }
-    public void setTypeOp(String typeOp) { this.typeOp = typeOp; }
+    public String getType() { return type; } 
+    public void setType(String type) { this.type = type; }
 
     public double getMontant() { return montant; }
     public void setMontant(double montant) { this.montant = montant; }
@@ -34,9 +46,12 @@ public class Operation {
     public Timestamp getDateOp() { return dateOp; }
     public void setDateOp(Timestamp dateOp) { this.dateOp = dateOp; }
 
-    public int getCompteId() { return compteId; }
-    public void setCompteId(int compteId) { this.compteId = compteId; }
+    public String getCompteSource() { return compteSource; }
+    public void setCompteSource(String compteSource) { this.compteSource = compteSource; }
 
-    public Integer getCompteDestId() { return compteDestId; }
-    public void setCompteDestId(Integer compteDestId) { this.compteDestId = compteDestId; }
+    public String getCompteDest() { return compteDest; }
+    public void setCompteDest(String compteDest) { this.compteDest = compteDest; }
+
+    public String getMarchand() { return marchand; }
+    public void setMarchand(String marchand) { this.marchand = marchand; }
 }

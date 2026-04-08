@@ -7,10 +7,19 @@ public class Client {
     private String telephone;
     private String adresse;
 
-    // Constructeur vide (Indispensable pour Java)
+    //  Constructeur vide 
     public Client() {}
 
-    // Constructeur pour créer un client plus facilement
+    //  Constructeur pour la CRÉATION (SANS ID)
+    
+    public Client(String nom, String prenom, String telephone, String adresse) {
+        this.nom = nom;
+        this.prenom = prenom;
+        this.telephone = telephone;
+        this.adresse = adresse;
+    }
+
+    // Constructeur pour la RÉCUPÉRATION (AVEC ID)
     public Client(int id, String nom, String prenom, String telephone, String adresse) {
         this.id = id;
         this.nom = nom;
@@ -19,7 +28,8 @@ public class Client {
         this.adresse = adresse;
     }
 
-    // Getters et Setters (Pour lire et modifier les données)
+    // --- Getters et Setters ---
+    
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
 
@@ -34,4 +44,10 @@ public class Client {
 
     public String getAdresse() { return adresse; }
     public void setAdresse(String adresse) { this.adresse = adresse; }
+
+    // Méthode pour afficher proprement les infos du client 
+    @Override
+    public String toString() {
+        return "Client [id=" + id + ", nom=" + nom + ", prenom=" + prenom + ", tel=" + telephone + "]";
+    }
 }

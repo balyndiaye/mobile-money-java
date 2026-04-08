@@ -2,29 +2,30 @@ package model;
 
 public class Compte {
     private int id;
-    private String numeroCompte;
+    private String numero; 
     private double solde;
-    private int clientId; // La clé étrangère vers le Client
+    private Client client; 
 
     public Compte() {}
 
-    public Compte(int id, String numeroCompte, double solde, int clientId) {
+    // Constructeur complet
+    public Compte(int id, String numero, double solde, Client client) {
         this.id = id;
-        this.numeroCompte = numeroCompte;
+        this.numero = numero;
         this.solde = solde;
-        this.clientId = clientId;
+        this.client = client;
     }
 
-    // Getters et Setters
+    // Getters et Setters synchronisés avec le Service et le DAO
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
 
-    public String getNumeroCompte() { return numeroCompte; }
-    public void setNumeroCompte(String numeroCompte) { this.numeroCompte = numeroCompte; }
+    public String getNumero() { return numero; } // Nom exact attendu
+    public void setNumero(String numero) { this.numero = numero; }
 
     public double getSolde() { return solde; }
     public void setSolde(double solde) { this.solde = solde; }
 
-    public int getClientId() { return clientId; }
-    public void setClientId(int clientId) { this.clientId = clientId; }
+    public Client getClient() { return client; } // Permet de faire getClient().getId()
+    public void setClient(Client client) { this.client = client; }
 }

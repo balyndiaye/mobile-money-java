@@ -2,65 +2,52 @@ package dao;
 
 import database.DatabaseConnection;
 import model.Operation;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
+import java.sql.*;
 
 public class OperationDAO {
 
-    public boolean enregistrerOperation(Operation op) {
-        String sql = "INSERT INTO Operation (type_op, montant, date_op, compte_id, compte_dest_id) VALUES (?, ?, ?, ?, ?)";
-        
-        try (Connection con = DatabaseConnection.getConnection();
-             PreparedStatement pstmt = con.prepareStatement(sql)) {
-            
-            pstmt.setString(1, op.getTypeOp());
-            pstmt.setDouble(2, op.getMontant());
-            pstmt.setTimestamp(3, new Timestamp(System.currentTimeMillis()));
-            pstmt.setInt(4, op.getCompteId());
-            
-            if (op.getCompteDestId() != null) {
-                pstmt.setInt(5, op.getCompteDestId());
-            } else {
-                pstmt.setNull(5, java.sql.Types.INTEGER);
+    // Méthode pour trouver l'ID interne à partir du numéro (ex: "SN001" -> 1)
+    private int recupererIdCompte(String numero, Connection con) throws SQLException {
+        String sql = "SELECT id FROM Compte WHERE numero = ?"; 
+        try (PreparedStatement pstmt = con.prepareStatement(sql)) {
+            pstmt.setString(1, numero);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) return rs.getInt("id");
             }
-            
-            return pstmt.executeUpdate() > 0;
-            
-        } catch (SQLException e) {
-            System.err.println("Erreur enregistrement operation : " + e.getMessage());
-            return false;
         }
+        return -1;
     }
 
-    public List<Operation> listerHistorique(int compteId) {
-        List<Operation> historique = new ArrayList<>();
-        String sql = "SELECT * FROM Operation WHERE compte_id = ? OR compte_dest_id = ? ORDER BY date_op DESC";
-
-        try (Connection con = DatabaseConnection.getConnection();
-             PreparedStatement pstmt = con.prepareStatement(sql)) {
+    public boolean enregistrerOperation(Operation op) {
+        // id, type_op, montant, date_op, compte_id, compte_dest_id
+        String sql = "INSERT INTO Operation (type_op, montant, date_op, compte_id, compte_dest_id) VALUES (?, ?, ?, ?, ?)";
+        
+        try (Connection con = DatabaseConnection.getConnection()) {
             
-            pstmt.setInt(1, compteId);
-            pstmt.setInt(2, compteId);
-            ResultSet rs = pstmt.executeQuery();
-
-            while (rs.next()) {
-                Operation op = new Operation();
-                op.setId(rs.getInt("id"));
-                op.setTypeOp(rs.getString("type_op"));
-                op.setMontant(rs.getDouble("montant"));
-                op.setDateOp(rs.getTimestamp("date_op"));
-                op.setCompteId(rs.getInt("compte_id"));
-                op.setCompteDestId(rs.getInt("compte_dest_id"));
-                historique.add(op);
+            
+            int idSource = recupererIdCompte(op.getCompteSource(), con);
+            
+            try (PreparedStatement pstmt = con.prepareStatement(sql)) {
+                pstmt.setString(1, op.getType());
+                pstmt.setDouble(2, op.getMontant());
+                pstmt.setTimestamp(3, op.getDateOp());
+                pstmt.setInt(4, idSource);
+                
+                // Si c'est un transfert, on cherche l'ID destination
+                if (op.getCompteDest() != null && !op.getCompteDest().isEmpty()) {
+                    int idDest = recupererIdCompte(op.getCompteDest(), con);
+                    pstmt.setInt(5, idDest);
+                } else {
+                   
+                    pstmt.setNull(5, Types.INTEGER);
+                }
+                
+                return pstmt.executeUpdate() > 0;
             }
+            
         } catch (SQLException e) {
-            System.err.println("Erreur lecture historique : " + e.getMessage());
+            System.err.println("Erreur SQL : " + e.getMessage());
+            return false;
         }
-        return historique;
     }
 }
