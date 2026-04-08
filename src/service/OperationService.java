@@ -44,8 +44,12 @@ public class OperationService {
         return "Retrait réussi. Nouveau solde : " + nouveauSolde;
     }
 
-    public String effectuerTransfert(String compteSource, String compteDest, double montant, Connection conn) throws Exception {
-        if (compteSource.equals(compteDest)) throw new IllegalArgumentException("Les comptes doivent être différents.");
+    public String effectuerTransfert(String compteSource, String compteDest, double montant) throws Exception {
+        if (compteSource.equals(compteDest)) {
+            return "Erreur : Les comptes source et destination doivent être différents.";
+        }
+
+        Connection conn = database.DatabaseConnection.getConnection();
 
         try {
             conn.setAutoCommit(false);
@@ -53,21 +57,32 @@ public class OperationService {
             effectuerRetrait(compteSource, montant);
             
             Compte dest = compteDAO.findByNumero(compteDest);
-            if (dest == null) throw new RuntimeException("Compte destination introuvable.");
+
+            if (dest == null) {
+                throw new RuntimeException("Compte destination introuvable.");
+            }
+
             compteDAO.mettreAJourSolde(compteDest, dest.getSolde() + montant);
 
             Operation op = new Operation("TRANSFERT", montant, compteSource, compteDest);
             operationDAO.enregistrerOperation(op);
 
             conn.commit();
-            return "Transfert effectué avec succès.";
+
+            return "Succès : Transfert de " + montant + " effectué avec succès.";
+            
         } 
         catch (Exception e) {
-            conn.rollback();
+            if (conn != null) {
+                conn.rollback();
+            }
             throw e;
         } 
         finally {
-            conn.setAutoCommit(true);
+            if (conn != null) {
+                conn.setAutoCommit(true);
+                conn.close(); 
+            }
         }
     }
 
