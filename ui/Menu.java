@@ -1,4 +1,5 @@
 package ui;
+import service.*;
 import java.util.Scanner;
 // import service.*;
 
@@ -225,11 +226,11 @@ public class Menu {
     }
 }
    
-    private void PaiementMarchand(){
+    // private void PaiementMarchand(){
         
-    }
+    // }
 
-    private void Historique(){
+    // private void Historique(){
         
-    }
+    // }
 }
