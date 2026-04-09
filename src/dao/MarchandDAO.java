@@ -2,19 +2,17 @@ package dao;
 
 import database.DatabaseConnection;
 import model.Marchand;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 
 public class MarchandDAO {
 
-    public boolean ajouterMarchand(Marchand m) {
+    
+    public boolean save(Marchand m) {
         String sql = "INSERT INTO Marchand (nom_commerce, code_marchand, compte_id) VALUES (?, ?, ?)";
         try (Connection con = DatabaseConnection.getConnection();
              PreparedStatement pstmt = con.prepareStatement(sql)) {
             
-            pstmt.setString(1, m.getNomCommerce());
+            pstmt.setString(1, m.getNom()); 
             pstmt.setString(2, m.getCodeMarchand());
             pstmt.setInt(3, m.getCompteId());
             
@@ -25,15 +23,45 @@ public class MarchandDAO {
         }
     }
 
+    
+    public Marchand findByNom(String nom) {
+        String sql = "SELECT * FROM Marchand WHERE nom_commerce = ?";
+        try (Connection con = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = con.prepareStatement(sql)) {
+            
+            pstmt.setString(1, nom);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return new Marchand(
+                        rs.getInt("id"), 
+                        rs.getString("nom_commerce"), 
+                        rs.getString("code_marchand"), 
+                        rs.getInt("compte_id")
+                    );
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Erreur findByNom : " + e.getMessage());
+        }
+        return null;
+    }
+
+   
     public Marchand trouverParCode(String code) {
         String sql = "SELECT * FROM Marchand WHERE code_marchand = ?";
         try (Connection con = DatabaseConnection.getConnection();
              PreparedStatement pstmt = con.prepareStatement(sql)) {
             
             pstmt.setString(1, code);
-            ResultSet rs = pstmt.executeQuery();
-            if (rs.next()) {
-                return new Marchand(rs.getInt("id"), rs.getString("nom_commerce"), rs.getString("code_marchand"), rs.getInt("compte_id"));
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return new Marchand(
+                        rs.getInt("id"), 
+                        rs.getString("nom_commerce"), 
+                        rs.getString("code_marchand"), 
+                        rs.getInt("compte_id")
+                    );
+                }
             }
         } catch (SQLException e) {
             System.err.println("Erreur recherche marchand : " + e.getMessage());
