@@ -1,12 +1,12 @@
 package service;
 
+import java.util.List;
 import dao.CompteDAO;
 import dao.OperationDAO;
 import model.Compte;
 import model.Operation;
 import exception.SoldeInsuffisantException;
 import java.sql.Connection;
-import java.sql.SQLException;
 
 public class OperationService {
 

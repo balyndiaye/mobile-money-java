@@ -3,6 +3,7 @@ package dao;
 import database.DatabaseConnection;
 import model.Operation;
 import java.sql.*;
+import java.util.List;
 
 public class OperationDAO {
 
@@ -49,5 +50,10 @@ public class OperationDAO {
             System.err.println("Erreur SQL : " + e.getMessage());
             return false;
         }
+    }
+
+    public List<Operation> findByCompteId(int compteId) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'findByCompteId'");
     }
 }

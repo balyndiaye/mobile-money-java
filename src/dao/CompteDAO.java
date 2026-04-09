@@ -81,4 +81,9 @@ public class CompteDAO {
             return false;
         }
     }
+
+    public String genererNumeroUnique() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'genererNumeroUnique'");
+    }
 }
