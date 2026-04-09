@@ -1,3 +1,5 @@
+// 
+
 package dao;
 
 import database.DatabaseConnection;
@@ -7,8 +9,9 @@ import java.sql.*;
 
 public class CompteDAO {
 
-   
-    // On utilise l'objet Compte complet en paramètre
+    /**
+     * Enregistre un nouveau compte en base de données.
+     */
     public boolean save(Compte compte) {
         String sql = "INSERT INTO Compte (numero, solde, client_id) VALUES (?, ?, ?)";
         
@@ -27,8 +30,10 @@ public class CompteDAO {
         }
     }
 
-    // Synchronisé avec CompteService.consulterCompte et OperationService
-   
+    /**
+     * Trouve un compte par son numéro (ex: MM-1741 ou SN001).
+     * CORRECTION : Récupère maintenant l'ID du compte.
+     */
     public Compte findByNumero(String numeroCompte) {
         String sql = "SELECT c.*, cl.nom, cl.prenom, cl.telephone, cl.adresse " +
                      "FROM Compte c " +
@@ -41,7 +46,7 @@ public class CompteDAO {
             pstmt.setString(1, numeroCompte);
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
-                    // On recrée l'objet Client d'abord
+                    // 1. On crée l'objet Client avec ses données
                     Client client = new Client(
                         rs.getInt("client_id"),
                         rs.getString("nom"),
@@ -50,11 +55,17 @@ public class CompteDAO {
                         rs.getString("adresse")
                     );
                     
-                    // Puis on crée l'objet Compte avec son Client
+                    // 2. On crée l'objet Compte
                     Compte compte = new Compte();
+                    
+                    // --- LA LIGNE CRUCIALE CORRIGÉE ICI ---
+                    compte.setId(rs.getInt("id")); 
+                    // --------------------------------------
+
                     compte.setNumero(rs.getString("numero"));
                     compte.setSolde(rs.getDouble("solde"));
                     compte.setClient(client);
+                    
                     return compte;
                 }
             }
@@ -64,7 +75,9 @@ public class CompteDAO {
         return null;
     }
 
-    // Synchronisé avec OperationService (Depot, Retrait, Transfert)
+    /**
+     * Met à jour le solde d'un compte après une opération.
+     */
     public boolean mettreAJourSolde(String numeroCompte, double nouveauSolde) {
         String sql = "UPDATE Compte SET solde = ? WHERE numero = ?";
         
@@ -82,8 +95,11 @@ public class CompteDAO {
         }
     }
 
+    /**
+     * Génère un numéro de compte aléatoire.
+     */
     public String genererNumeroUnique() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'genererNumeroUnique'");
+        long randomNum = (int) (Math.random() * (9999 - 1000 + 1)) + 1000;
+        return "MM-" + randomNum;
     }
 }

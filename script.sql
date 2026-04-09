@@ -57,3 +57,4 @@ VALUES ('SN001', 50000.0, 1);
 -- Ajout d'un marchand (Pour tester les paiements)
 INSERT INTO Marchand (nom, code_marchand, compte_id) 
 VALUES ('Cafeteria ESP', 'MARCH001', 1);
+VALUES ('Maga Scent', 'MARCH002', 2);
