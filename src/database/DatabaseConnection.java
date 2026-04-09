@@ -6,7 +6,7 @@ import java.sql.SQLException;
 
 public class DatabaseConnection {
     // Configuration spécifique à ton installation
-    private static final String URL = "jdbc:mysql://localhost:3307/mobile_money_db";
+    private static final String URL = "jdbc:mysql://localhost:3306/mobile_money_db";
     private static final String USER = "root";
     private static final String PASSWORD = ""; 
 

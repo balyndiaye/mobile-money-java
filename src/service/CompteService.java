@@ -17,13 +17,13 @@ public class CompteService {
         }
 
         Compte nouveauCompte = new Compte();
-        nouveauCompte.setNumero(numeroCompte);
+        nouveauCompte.setNumero(compteDAO.genererNumeroUnique());
         nouveauCompte.setSolde(0.0);
         nouveauCompte.setClient(client);
 
         compteDAO.save(nouveauCompte);
 
-        return "Compte créé avec succès. Numéro : " + numeroCompte;
+        return "Compte créé avec succès. Numéro : " + nouveauCompte.getNumero();
     }
 
     public Compte consulterCompte(String numeroCompte) {

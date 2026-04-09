@@ -1,6 +1,6 @@
 package service;
 
-
+import java.util.List;
 import dao.ClientDAO;
 import model.Client;
 

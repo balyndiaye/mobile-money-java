@@ -1,7 +1,6 @@
 package service;
 
 import dao.MarchandDAO;
-import model.Marchand;
 
 public class MarchandService {
     
