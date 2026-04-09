@@ -48,7 +48,7 @@ CREATE TABLE Operation (
 
 -- Ajout d'un client
 INSERT INTO Client (nom, prenom, telephone, adresse) 
-VALUES ('Diarra', 'Etudiant', '771234567', 'Dakar ESP');
+VALUES ('Sall', 'Diarra', '771234567', 'Dakar ESP');
 
 -- Ajout d'un compte pour ce client (Numéro SN001)
 INSERT INTO Compte (numero, solde, client_id) 
@@ -56,5 +56,5 @@ VALUES ('SN001', 50000.0, 1);
 
 -- Ajout d'un marchand (Pour tester les paiements)
 INSERT INTO Marchand (nom, code_marchand, compte_id) 
-VALUES ('Cafeteria ESP', 'MARCH001', 1);
-VALUES ('Maga Scent', 'MARCH002', 2);
+VALUES ('Cafeteria ESP', 'MARCH001', 1),
+       ('Maga Scent', 'MARCH002', 1);
