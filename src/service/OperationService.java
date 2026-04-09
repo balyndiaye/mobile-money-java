@@ -102,4 +102,8 @@ public class OperationService {
         return "Paiement de " + montant + " à " + nomMarchand + " confirmé.";
     }
 
+    public List<Operation> listerOperations(int compteId) {
+        return operationDAO.findByCompteId(compteId);
+    }
+
 }
